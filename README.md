@@ -1,4 +1,4 @@
-# UAS Pengolahan Citra Digital  
+# UAS Pengolahan Citra Digital
 ## Segmentasi Lanjut: Edge-Based dan Region-Based
 
 ---
@@ -73,7 +73,76 @@ Thresholding merupakan metode segmentasi dasar yang memisahkan objek dan latar b
 
 Pada implementasi praktikum digunakan **Otsu’s Method**, karena mampu menentukan nilai threshold optimal secara otomatis berdasarkan variansi histogram citra.
 
-### Contoh Kode Thresholding (PDF Dosen)
-```python
-_, otsu = cv2.threshold(image, 0, 255,
-                        cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+Contoh Kode Thresholding (PDF Dosen):  
+_, otsu = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+---
+
+## Edge-Based Segmentation
+Edge-based segmentation mendeteksi batas objek berdasarkan perubahan intensitas yang tajam (tepi). Proses ini terdiri dari tahapan deteksi tepi, koneksi tepi, dan segmentasi region.
+
+### Gradient dan Sobel Operator
+Deteksi tepi didasarkan pada konsep gradient, yaitu turunan intensitas terhadap arah horizontal dan vertikal. Operator Sobel digunakan untuk menghitung komponen gradient pada citra.
+
+Contoh Kode Sobel (PDF Dosen):  
+gx = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)  
+gy = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize=3)  
+magnitude = np.sqrt(gx**2 + gy**2)
+
+### Canny Edge Detector
+Canny Edge Detector merupakan algoritma deteksi tepi multi-tahap yang mencakup noise reduction, perhitungan gradient, non-maximum suppression, dan hysteresis thresholding.
+
+Contoh Implementasi:  
+edges = cv2.Canny(gray, 100, 200)
+
+---
+
+## Region-Based Segmentation
+Region-based segmentation mengelompokkan piksel menjadi region berdasarkan kemiripan properti seperti intensitas dan tekstur sehingga membentuk area objek yang lebih utuh.
+
+### Region Growing
+Region growing dimulai dari seed point dan memperluas region berdasarkan kemiripan intensitas antar piksel yang berdekatan.
+
+### Watershed Algorithm
+Watershed Algorithm memandang citra sebagai permukaan topografi dan menggunakan marker untuk memisahkan objek yang saling berdekatan.
+
+Contoh Implementasi:  
+markers = cv2.watershed(image, markers)  
+image[markers == -1] = [255, 0, 0]
+
+---
+
+## Implementasi Program
+Program diimplementasikan menggunakan bahasa **Python** dengan library **OpenCV**, **NumPy**, dan **Matplotlib**. Program memproses satu citra dan menerapkan thresholding, edge-based segmentation (Canny), serta region-based segmentation (Watershed).
+
+---
+
+## Analisis Hasil Praktikum
+Thresholding efektif pada citra dengan perbedaan intensitas yang jelas, namun kurang optimal pada pencahayaan tidak merata. Edge-based segmentation mampu mendeteksi batas objek dengan jelas, tetapi tidak membentuk area objek secara utuh. Region-based segmentation menggunakan watershed memberikan hasil segmentasi area objek yang paling lengkap, meskipun sensitif terhadap preprocessing.
+
+---
+
+## Analisis Pemilihan Parameter
+Pemilihan parameter threshold pada Canny dan tahap preprocessing pada watershed sangat berpengaruh terhadap hasil segmentasi. Rasio threshold rendah dan tinggi pada Canny mengikuti rekomendasi 2:1 atau 3:1. Pada watershed, pemilihan marker yang tepat diperlukan untuk menghindari over-segmentation.
+
+---
+
+## Diskusi Hasil dan Keterbatasan
+Setiap metode segmentasi memiliki keterbatasan. Thresholding sensitif terhadap pencahayaan, edge-based segmentation tidak membentuk area objek, dan region-based segmentation memiliki kompleksitas tinggi serta sangat bergantung pada tahap preprocessing.
+
+---
+
+## Studi Kasus dan Skenario Penggunaan
+Thresholding cocok digunakan pada citra sederhana dengan histogram bimodal. Edge-based segmentation sesuai untuk citra dengan batas objek yang jelas. Region-based segmentation lebih tepat digunakan pada citra kompleks dengan objek saling berdekatan, seperti citra medis.
+
+---
+
+## Kesimpulan dan Rekomendasi
+Segmentasi citra lanjutan memberikan hasil yang lebih fleksibel dibandingkan segmentasi dasar. Thresholding efektif sebagai tahap awal, edge-based segmentation berguna untuk deteksi batas, dan region-based segmentation menghasilkan area objek yang lebih homogen. Pemilihan metode segmentasi sebaiknya disesuaikan dengan karakteristik citra dan tujuan analisis.
+
+---
+
+## Referensi
+Materi PDF Pengolahan Citra Digital Pertemuan 7  
+Dr. Arya Adhyaksa Waskita, S.Si., M.Si.  
+Materi PPT Presentasi Kelompok
